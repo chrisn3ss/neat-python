@@ -7,7 +7,7 @@ from random import choice, random, shuffle
 from neat.activations import ActivationFunctionSet
 from neat.aggregations import AggregationFunctionSet
 from neat.config import ConfigParameter, write_pretty_params
-from neat.genes import DefaultConnectionGene, DefaultNodeGene
+from neat.genes import DefaultConnectionGene, DefaultNodeGene, CTRNNNodeGene
 from neat.graphs import creates_cycle
 from neat.graphs import required_for_output
 
@@ -574,6 +574,13 @@ class DefaultGenome(object):
         new_genome.connections = used_connection_genes
         return new_genome
 
+class CTRNNGenome(DefaultGenome):
+
+    @classmethod
+    def parse_config(cls, param_dict):
+        param_dict['node_gene_type'] = CTRNNNodeGene
+        param_dict['connection_gene_type'] = DefaultConnectionGene
+        return DefaultGenomeConfig(param_dict)
 
 def get_pruned_genes(node_genes, connection_genes, input_keys, output_keys):
     used_nodes = required_for_output(input_keys, output_keys, connection_genes)

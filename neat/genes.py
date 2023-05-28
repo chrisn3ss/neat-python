@@ -101,6 +101,24 @@ class DefaultNodeGene(BaseGene):
             d += 1.0
         return d * config.compatibility_weight_coefficient
 
+class CTRNNNodeGene(BaseGene):
+    _gene_attributes = [FloatAttribute('tau'),
+                        FloatAttribute('bias'),
+                        FloatAttribute('response'),
+                        StringAttribute('activation', options=''),
+                        StringAttribute('aggregation', options='')]
+
+    def __init__(self, key):
+        assert isinstance(key, int), f"CTRNNNodeGene key must be an int, not {key!r}"
+        BaseGene.__init__(self, key)
+
+    def distance(self, other, config):
+        d = abs(self.bias - other.bias) + abs(self.response - other.response)  + abs(self.tau - other.tau)
+        if self.activation != other.activation:
+            d += 1.0
+        if self.aggregation != other.aggregation:
+            d += 1.0
+        return d * config.compatibility_weight_coefficient
 
 # TODO: Do an ablation study to determine whether the enabled setting is
 # important--presumably mutations that set the weight to near zero could

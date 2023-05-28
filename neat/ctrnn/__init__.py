@@ -111,7 +111,7 @@ class CTRNN(object):
             node = genome.nodes[node_key]
             activation_function = genome_config.activation_defs.get(node.activation)
             aggregation_function = genome_config.aggregation_function_defs.get(node.aggregation)
-            node_evals[node_key] = CTRNNNodeEval(time_constant,
+            node_evals[node_key] = CTRNNNodeEval(node.tau,
                                                  activation_function,
                                                  aggregation_function,
                                                  node.bias,
