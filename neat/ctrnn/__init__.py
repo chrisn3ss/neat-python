@@ -13,7 +13,6 @@ class CTRNNNodeEval(object):
         self.response = response
         self.links = links
 
-
 class CTRNN(object):
     """Sets up the ctrnn network itself."""
     def __init__(self, inputs, outputs, node_evals):
@@ -33,6 +32,8 @@ class CTRNN(object):
 
         self.active = 0
         self.time_seconds = 0.0
+        self.outputs_hist = []
+        self.node_keys = []
 
     def reset(self):
         self.values = [dict((k, 0.0) for k in v) for v in self.values]
@@ -83,6 +84,11 @@ class CTRNN(object):
             self.time_seconds += dt
 
         ovalues = self.values[1 - self.active]
+        net_outputs = []
+        for key in ovalues.keys():
+            net_outputs.append(ovalues[key])
+            self.node_keys.append(key)
+        self.outputs_hist.append(net_outputs)
         return [ovalues[i] for i in self.output_nodes]
 
     @staticmethod

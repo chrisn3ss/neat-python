@@ -10,10 +10,12 @@ import cart_pole
 import neat
 import visualize
 
+import matplotlib.pyplot as plt
+
 runs_per_net = 5
 simulation_seconds = 60.0
 time_const = cart_pole.CartPole.time_step
-
+do_plots = False
 
 # Use the CTRNN network phenotype and the discrete actuator force function.
 def eval_genome(genome, config):
@@ -46,6 +48,12 @@ def eval_genome(genome, config):
 
         # print("{0} fitness {1}".format(net, fitness))
 
+    if do_plots:
+        plt.figure()
+        plt.plot(net.outputs_hist)
+        plt.legend(net.node_keys)
+        plt.figure()
+
     # The genome's fitness is its worst performance across all runs.
     return min(fitnesses)
 
@@ -72,17 +80,24 @@ def run():
         pickle.dump(winner, f)
 
     print(winner)
+    global do_plots
+    do_plots = True
 
-    visualize.plot_stats(stats, ylog=True, view=True, filename="ctrnn-fitness.svg")
-    visualize.plot_species(stats, view=True, filename="ctrnn-speciation.svg")
+    # run evaluation function once, so that we can see animation and plots
+    eval_genome(winner, config)
 
-    node_names = {-1: 'x', -2: 'dx', -3: 'theta', -4: 'dtheta', 0: 'control'}
+    node_names = {-1: 'x -1', -2: 'dx -2', -3: 'theta -3', -4: 'dtheta -4', 0: 'control 0'}
     visualize.draw_net(config, winner, True, node_names=node_names)
 
     visualize.draw_net(config, winner, view=True, node_names=node_names,
                        filename="winner-ctrnn.gv")
     visualize.draw_net(config, winner, view=True, node_names=node_names,
                        filename="winner-ctrnn-pruned.gv", prune_unused=True)
+
+    visualize.plot_stats(stats, ylog=True, view=True, filename="ctrnn-fitness.svg")
+    visualize.plot_species(stats, view=True, filename="ctrnn-speciation.svg")
+
+    plt.show()
 
 
 if __name__ == '__main__':
