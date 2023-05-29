@@ -132,7 +132,7 @@ def run(config_path):
         axes = plt.subplot(4, 1, r + 1)
         plt.title("Traces for XOR input {{{0:.1f}, {1:.1f}}}".format(*inputData), fontsize=12)
         for i, s in neuron_data.items():
-            if i in [0, 1]:
+            if True: # i in [0, 1]:
                 t, I, v, u, fired = zip(*s)
                 plt.plot(t, v, "-", label="neuron {0:d}".format(i))
 
@@ -141,6 +141,8 @@ def run(config_path):
         circle1 = patches.Ellipse((t1, v1), 1.0, 10.0, color='r', fill=False)
         axes.add_artist(circle0)
         axes.add_artist(circle1)
+
+        axes.legend()
 
         plt.ylabel("Potential (mv)", fontsize=10)
         plt.ylim(-100, 50)
